@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' data: gap: https://ssl.gstatic.com http://*.tile.osm.org https://*.googleapis.com; 
         style-src 'self' 'unsafe-inline' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com;
@@ -255,8 +257,8 @@
 
 <body>
     <div class="loader"></div>
-    <ons-navigator var="AppNavigator" id="Navigator" page="views/main.html">
-    </ons-navigator>
+    <ons-navigator var="AppNavigator" id="Navigator"></ons-navigator>
+
     <script src="cordova.js"></script>
     <script src="lib/angular/angular.min.js"></script>
     <script src="lib/OnsenUI/js/onsenui.min.js"></script>

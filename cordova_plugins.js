@@ -42,11 +42,11 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-extension": "1.5.4",
     "cordova-plugin-admobpro": "2.31.5",
     "cordova-plugin-browsersync": "0.1.7",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-dialogs": "2.0.1",
+    "cordova-plugin-extension": "1.5.4",
     "cordova-plugin-whitelist": "1.3.3"
 }
 // BOTTOM OF METADATA
