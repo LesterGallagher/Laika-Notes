@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' data: gap: https://ssl.gstatic.com http://*.tile.osm.org https://*.googleapis.com; 
+        style-src 'self' 'unsafe-inline' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com;
+        media-src *; 
+        font-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com;
+        img-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com https://places.ns-mlab.nl data: content:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com http://*.tile.osm.org https://maps.googleapis.com;
+        connect-src 'self' https://*.gstatic.com http://*.openov.nl https://*.googleapis.com; ">
+    <meta name="description" content="A simple notes managing app. Can be added to your homescreen and works offline.">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#000000">
+    <meta name="apple-mobile-web-app-title" content="Laika Chat">
+    <meta name="application-name" content="Laika Chat">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="preload" as="style" href="lib/OnsenUI/css/onsen-css-components.css">
+    <link rel="preload" as="style" href="lib/OnsenUI/css/onsen-css-components-dark-theme.css">
+    <link rel="preload" as="style" href="lib/OnsenUI/css/font_awesome/css/font-awesome.min.css">
+
+    <link rel="preload" href="lib/angular/angular.min.js" as="script">
+    <link rel="preload" href="lib/OnsenUI/js/onsenui.min.js" as="script">
+    <link rel="preload" href="cordova.js" as="script">
+    <link rel="preload" href="lib/quill/quill.min.js" as="script">
+    <link rel="preload" href="js/index.js" as="script">
+
+    <script>
+        window.theme = window.localStorage && window.localStorage.theme || 'light';
+        if (window.theme === 'light') {
+            document.write('<link id="onsen-theme" rel="stylesheet" href="lib/OnsenUI/css/onsen-css-components.css">');
+        } else {
+            document.write('<link id="onsen-theme" rel="stylesheet" href="lib/OnsenUI/css/onsen-css-components-dark-theme.css">');
+        }
+    </script>
+    <link rel="preload" href="lib/OnsenUI/css/onsenui.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="lib/quill/quill.snow.css" as="style" onload="this.rel='stylesheet'">
+    <style>
+        * {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+        }
+
+        body {
+            -webkit-touch-callout: none;
+            /* prevent callout to copy image, etc when tap to hold */
+            -webkit-text-size-adjust: none;
+            /* prevent webkit from resizing text to fit */
+            -webkit-user-select: text;
+            /* prevent copy paste, to allow, change 'none' to 'text' */
+        }
+
+        .second-page-list-item div p {
+            margin: 5px;
+        }
+
+        .second-page-list-item div {
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+
+        a {
+            color: unset;
+            text-decoration: none;
+        }
+
+        a:hover,
+        a:focus,
+        a:active,
+        a:visited,
+        a:link {
+            text-decoration: none;
+        }
+
+        .editor {
+            user-select: all;
+            height: calc(100% - 41.95px);
+        }
+
+        .note {
+            outline: none;
+        }
+
+        .note.deleted {
+            animation: removeNote 100ms ease;
+        }
+
+        .note .note-time {
+            color: #999;
+            margin-top: -25px;
+            display: block;
+        }
+
+        .main-bottom-toolbar .left {
+            position: absolute;
+            top: 0;
+            left: 10px;
+            bottom: 0;
+            line-height: 44px;
+        }
+
+        .main-bottom-toolbar .right {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            bottom: 0;
+            line-height: 44px;
+        }
+
+        .note .edit-section.left {
+            display: inline-block;
+            vertical-align: middle;
+
+            transition: width 100ms ease;
+            width: 0;
+            overflow: hidden;
+        }
+
+        .note .edit-section.left ons-icon {
+            color: red;
+
+        }
+
+        .edit .edit-section.left {
+            width: 28px;
+        }
+
+
+        .edit #notes-edit {
+            color: red;
+        }
+
+        .note .note-content.center {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .note-title-edit {
+            width: 100%;
+            width: 100%;
+            font-size: 1.4em;
+            height: 1.6em;
+            font-weight: bold;
+            border: none;
+            padding-left: 16px;
+        }
+
+        #app-popover-btn ons-icon {
+            background-color: rgba(38, 100, 171, 0.81);
+            border-radius: 50%;
+            color: #fff;
+            text-align: center;
+        }
+
+        #app-popover-btn ons-icon::before {
+            content: "\f142";
+            font-size: .7em;
+            vertical-align: bottom;
+            line-height: 29px;
+        }
+
+        .labeled-control {
+            border-radius: .5em;
+        }
+
+        .ql-editor {
+            -moz-user-select: text;
+            -webkit-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .ql-container.ql-snow,
+        .ql-toolbar.ql-snow {
+            border: 1px solid rgba(70, 70, 70, 0.2);
+        }
+
+        .loader {
+            position: relative;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background-color: #333;
+            border-radius: 50%;
+        }
+
+        .loader:after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            border: 0px solid white;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            -webkit-animation: loading 1000ms ease-out forwards infinite;
+            animation: loading 1000ms ease-out forwards infinite;
+        }
+
+        @-webkit-keyframes loading {
+            0% {
+                border: 0px solid white;
+            }
+            20% {
+                border: 8px solid white;
+                width: 0%;
+                height: 0%;
+            }
+            100% {
+                border: 8px solid white;
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        @keyframes loading {
+            0% {
+                border: 0px solid white;
+            }
+            20% {
+                border: 8px solid white;
+                width: 0%;
+                height: 0%;
+            }
+            100% {
+                border: 8px solid white;
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        @keyframes removeNote {
+            from {
+                transform: scaleY(1);
+            }
+            to {
+                transform: scaleY(0);
+            }
+        }
+    </style>
+    <title>Notes</title>
+</head>
+
+<body>
+    <div class="loader"></div>
+    <ons-navigator var="AppNavigator" id="Navigator" page="views/main.html">
+    </ons-navigator>
+    <script src="cordova.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/OnsenUI/js/onsenui.min.js"></script>
+    <script src="js/index.js"></script>
+    <script async src="lib/quill/quill.min.js"></script>
+</body>
+
+</html>
