@@ -18,6 +18,8 @@ var urlsToCache = [
     './plugins/cordova-plugin-device/www/device.js',
     './plugins/cordova-plugin-dialogs/www/notification.js',
     './plugins/cordova-plugin-dialogs/www/browser/notification.js',
+    './js/db.min.js',
+    './js/promise-polyfill.min.js',
     './js/browser.js',
 ];
 

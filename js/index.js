@@ -1,5 +1,34 @@
 "use strict"
 
+// quill extensions
+// emoji's
+var Block = Quill.import('blots/block');
+var Embed = Quill.import("blots/embed");
+var Inline = Quill.import('blots/inline');
+var BlockEmbed = Quill.import('blots/block/embed');
+
+function AudioBlot(node, value) {
+    var obj = new BlockEmbed(node, value);
+    Object.setPrototypeOf(obj, AudioBlot.prototype); // or B.prototype, but if you derive from B you'll have to do this dance again
+    return obj;
+};
+AudioBlot.create = function (options) {
+    var node = BlockEmbed.create.call(this)
+    // Set non-format related attributes with static values
+    node.setAttribute('src', options.src);
+    node.setAttribute('controls', 'true');
+    return node;
+}
+Object.setPrototypeOf(AudioBlot.prototype, BlockEmbed.prototype);
+Object.setPrototypeOf(AudioBlot, BlockEmbed);
+AudioBlot.blotName = 'audio';
+AudioBlot.tagName = 'audio';
+AudioBlot.className = 'audio-recording';
+
+Quill.register(AudioBlot);
+
+// end quill extensions
+
 ons.bootstrap();
 
 ons.ready(function () {
@@ -171,16 +200,38 @@ ons.ready(function () {
                 noteName.innerText = noteNameEdit.value = note.name;
                 noteContent.innerHTML = note.content;
 
+                var insertEmoji = function () {
+                    let editorSelection = quill.getSelection();
+                    const cursorPosition = editorSelection && editorSelection.index ? editorSelection.index : 0;
+                    quill.insertEmbed(cursorPosition, "emoji", 'icon icon-smiley');
+                    quill.setSelection(cursorPosition + 1);
+                };
+
+                var insertAudio = function () {
+                    captureAudio()
+                        .then(src => {
+                            var range = quill.getSelection(true);
+                            console.log('adding audio element', src);
+                            quill.insertEmbed(range.index, 'audio', { src: src });
+                            // quill.insertText(range.index + 1, '\n', Quill.sources.USER);
+                            quill.setSelection(range.index + 1, Quill.sources.SILENT);
+                        });
+                }
+
                 var quill = new Quill('.editor', {
                     modules: {
-                        toolbar: [
-                            [{ header: [1, 2, false] }],
-                            ['bold', 'italic', 'underline'],
-                        ]
+                        toolbar: {
+                            container: el.getElementsByClassName('ql-toolbar')[0],
+                            handlers: {
+                                emoji: insertEmoji,
+                                audio: insertAudio,
+                            }
+                        }
                     },
                     placeholder: 'Compose an epic...',
                     theme: 'snow'  // or 'bubble'
-                }).on('text-change', function (delta, oldDelta, source) {
+                });
+                quill.on('text-change', function (delta, oldDelta, source) {
                     if (source == 'user') {
                         onInput();
                     }
@@ -242,46 +293,7 @@ ons.ready(function () {
                 window.appData.persist();
             }
 
-            function cu(element) {//classutil
-                return new (function () {
-                    var arr = element.getAttribute('class').split(/\s+/g) || [];
-                    var items = {};
-                    for (var a = 0; a < arr.length; a++) {
-                        items[arr[a]] = true;
-                    }
 
-                    this.add = function () {
-                        for (var i = 0; i < arguments.length; i++) {
-                            items[arguments[i]] = true;
-                        }
-                        write();
-                    }
-
-                    this.toggle = function () {
-                        for (var i = 0; i < arguments.length; i++) {
-                            items[arguments[i]] = !items[arguments[i]];
-                        }
-                        write();
-                    }
-
-                    this.remove = function () {
-                        for (var i = 0; i < arguments.length; i++) {
-                            items[arguments[i]] = false;
-                        }
-                        write();
-                    }
-
-                    var write = function () {
-                        var arr = [];
-                        for (var key in items) {
-                            if (items.hasOwnProperty(key) && items[key]) {
-                                arr.push(key);
-                            }
-                        }
-                        element.setAttribute('class', arr.join(' '));
-                    }
-                })();
-            };
         }
     });
 });
@@ -292,5 +304,98 @@ ons.ready(function () {
 //     elem.dispatchEvent(event);
 // }
 
+function cu(element) {//classutil
+    return new (function () {
+        var arr = element.getAttribute('class').split(/\s+/g) || [];
+        var items = {};
+        for (var a = 0; a < arr.length; a++) {
+            items[arr[a]] = true;
+        }
 
+        this.add = function () {
+            for (var i = 0; i < arguments.length; i++) {
+                items[arguments[i]] = true;
+            }
+            return write();
+        }
+
+        this.toggle = function () {
+            for (var i = 0; i < arguments.length; i++) {
+                items[arguments[i]] = !items[arguments[i]];
+            }
+            return write();
+        }
+
+        this.remove = function () {
+            for (var i = 0; i < arguments.length; i++) {
+                items[arguments[i]] = false;
+            }
+            return write();
+        }
+
+        var write = function () {
+            var arr = [];
+            for (var key in items) {
+                if (items.hasOwnProperty(key) && items[key]) {
+                    arr.push(key);
+                }
+            }
+            element.setAttribute('class', arr.join(' '));
+            return this;
+        }
+    })();
+};
+
+function extend() {
+    for (var i = 1; i < arguments.length; i++)
+        for (var key in arguments[i])
+            if (arguments[i].hasOwnProperty(key))
+                arguments[0][key] = arguments[i][key];
+    return arguments[0];
+}
+
+function captureAudio() {
+    return new Promise(function (res, rej) {
+        if (cordova.platformId === 'browser') {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                ons.notification.alert({
+                    message: 'Unable to capture audio on this brower/device',
+                });
+                return rej();
+            }
+            return navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                .then(function (stream) {
+                    if (window.URL) {
+                        return window.URL.createObjectURL(stream);
+                    } else {
+                        return stream;
+                    }
+                })
+                .catch(function (err) {
+                    ons.notification.alert({
+                        message: 'Cannot record audio :(. ' + err.message || err,
+                    });
+                    throw err;
+                });
+        } else {
+            // capture callback
+            function captureSuccess(mediaFiles) {
+                var path = mediaFiles[mediaFiles.length - 1].fullPath;
+                return res(path);
+            };
+
+            // capture error callback
+            function captureError(error) {
+                console.error('Error code: ' + error.code, null, 'Capture Error');
+                console.error(error);
+                ons.notification.alert({
+                    message: 'Unable to capture audio. Most likely your device does not support audio recording. Error code: ' + error.code
+                });
+                return rej();
+            };
+            // start audio capture
+            navigator.device.capture.captureAudio(captureSuccess, captureError, { limit: 1, duration: 60 });
+        }
+    });
+}
 

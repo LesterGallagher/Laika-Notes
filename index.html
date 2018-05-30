@@ -3,14 +3,7 @@
 
 <head>
 
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' data: gap: https://ssl.gstatic.com http://*.tile.osm.org https://*.googleapis.com; 
-        style-src 'self' 'unsafe-inline' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com;
-        media-src *; 
-        font-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com;
-        img-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com https://places.ns-mlab.nl data: content:;
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com http://*.tile.osm.org https://maps.googleapis.com;
-        connect-src 'self' https://*.gstatic.com http://*.openov.nl https://*.googleapis.com; ">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com http://*.tile.osm.org https://*.googleapis.com ws: 'unsafe-inline' ws: 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com; media-src *; font-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com; img-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com https://places.ns-mlab.nl data: content:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com http://*.tile.osm.org https://maps.googleapis.com; connect-src 'self' https://*.gstatic.com http://*.openov.nl https://*.googleapis.com;">
     <meta name="description" content="A simple notes managing app. Can be added to your homescreen and works offline.">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
@@ -21,70 +14,50 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- iPad retina portrait startup image -->
-    <link href="apple-touch-startup-image-1536x2008.png"
-          media="(device-width: 768px) and (device-height: 1024px)
+    <link href="apple-touch-startup-image-1536x2008.png" media="(device-width: 768px) and (device-height: 1024px)
                  and (-webkit-device-pixel-ratio: 2)
-                 and (orientation: portrait)"
-          rel="apple-touch-startup-image">
+                 and (orientation: portrait)" rel="apple-touch-startup-image">
 
     <!-- iPad retina landscape startup image -->
-    <link href="apple-touch-startup-image-1496x2048.png"
-          media="(device-width: 768px) and (device-height: 1024px)
+    <link href="apple-touch-startup-image-1496x2048.png" media="(device-width: 768px) and (device-height: 1024px)
                  and (-webkit-device-pixel-ratio: 2)
-                 and (orientation: landscape)"
-          rel="apple-touch-startup-image">
+                 and (orientation: landscape)" rel="apple-touch-startup-image">
 
     <!-- iPad non-retina portrait startup image -->
-    <link href="apple-touch-startup-image-768x1004.png"
-          media="(device-width: 768px) and (device-height: 1024px)
+    <link href="apple-touch-startup-image-768x1004.png" media="(device-width: 768px) and (device-height: 1024px)
                  and (-webkit-device-pixel-ratio: 1)
-                 and (orientation: portrait)"
-          rel="apple-touch-startup-image">
+                 and (orientation: portrait)" rel="apple-touch-startup-image">
 
     <!-- iPad non-retina landscape startup image -->
-    <link href="apple-touch-startup-image-748x1024.png"
-          media="(device-width: 768px) and (device-height: 1024px)
+    <link href="apple-touch-startup-image-748x1024.png" media="(device-width: 768px) and (device-height: 1024px)
                  and (-webkit-device-pixel-ratio: 1)
-                 and (orientation: landscape)"
-          rel="apple-touch-startup-image">
+                 and (orientation: landscape)" rel="apple-touch-startup-image">
 
     <!-- iPhone 6 Plus portrait startup image -->
-    <link href="apple-touch-startup-image-1242x2148.png"
-          media="(device-width: 414px) and (device-height: 736px)
+    <link href="apple-touch-startup-image-1242x2148.png" media="(device-width: 414px) and (device-height: 736px)
                  and (-webkit-device-pixel-ratio: 3)
-                 and (orientation: portrait)"
-          rel="apple-touch-startup-image">
+                 and (orientation: portrait)" rel="apple-touch-startup-image">
 
     <!-- iPhone 6 Plus landscape startup image -->
-    <link href="apple-touch-startup-image-1182x2208.png"
-          media="(device-width: 414px) and (device-height: 736px)
+    <link href="apple-touch-startup-image-1182x2208.png" media="(device-width: 414px) and (device-height: 736px)
                  and (-webkit-device-pixel-ratio: 3)
-                 and (orientation: landscape)"
-          rel="apple-touch-startup-image">
+                 and (orientation: landscape)" rel="apple-touch-startup-image">
 
     <!-- iPhone 6 startup image -->
-    <link href="apple-touch-startup-image-750x1294.png"
-          media="(device-width: 375px) and (device-height: 667px)
-                 and (-webkit-device-pixel-ratio: 2)"
-          rel="apple-touch-startup-image">
+    <link href="apple-touch-startup-image-750x1294.png" media="(device-width: 375px) and (device-height: 667px)
+                 and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
 
     <!-- iPhone 5 startup image -->
-    <link href="apple-touch-startup-image-640x1096.png"
-          media="(device-width: 320px) and (device-height: 568px)
-                 and (-webkit-device-pixel-ratio: 2)"
-          rel="apple-touch-startup-image">
+    <link href="apple-touch-startup-image-640x1096.png" media="(device-width: 320px) and (device-height: 568px)
+                 and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
 
     <!-- iPhone < 5 retina startup image -->
-    <link href="apple-touch-startup-image-460x920.png"
-          media="(device-width: 320px) and (device-height: 480px)
-                 and (-webkit-device-pixel-ratio: 2)"
-          rel="apple-touch-startup-image">
+    <link href="apple-touch-startup-image-460x920.png" media="(device-width: 320px) and (device-height: 480px)
+                 and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
 
     <!-- iPhone < 5 non-retina startup image -->
-    <link href="apple-touch-startup-image-320x460.png"
-          media="(device-width: 320px) and (device-height: 480px)
-                 and (-webkit-device-pixel-ratio: 1)"
-          rel="apple-touch-startup-image">
+    <link href="apple-touch-startup-image-320x460.png" media="(device-width: 320px) and (device-height: 480px)
+                 and (-webkit-device-pixel-ratio: 1)" rel="apple-touch-startup-image">
 
 
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -105,6 +78,8 @@
     <link rel="preload" href="lib/OnsenUI/js/onsenui.min.js" as="script">
     <link rel="preload" href="cordova.js" as="script">
     <link rel="preload" href="lib/quill/quill.min.js" as="script">
+    <link rel="preload" href="js/promise-polyfill.min.js" as="script">
+    <link rel="preload" href="js/db.min.js" as="script">
     <link rel="preload" href="js/index.js" as="script">
 
     <script>
@@ -125,6 +100,12 @@
 
         html {
             -webkit-text-size-adjust: 100%;
+        }
+
+        audio {
+            -moz-box-shadow: 2px 2px 4px 1px rgba(70, 70, 70, 0.2);
+            -webkit-box-shadow:  2px 2px 4px 1px rgba(70, 70, 70, 0.2);
+            box-shadow: 2px 2px 4px 1px rgba(70, 70, 70, 0.2);
         }
 
         body {
@@ -347,8 +328,10 @@
     <script src="cordova.js"></script>
     <script src="lib/angular/angular.min.js"></script>
     <script src="lib/OnsenUI/js/onsenui.min.js"></script>
+    <script src="js/db.min.js"></script>
+    <script src="lib/quill/quill.min.js"></script>
+    <script src="js/promise-polyfill.min.js"></script>
     <script src="js/index.js"></script>
-    <script async src="lib/quill/quill.min.js"></script>
 </body>
 
 </html>
