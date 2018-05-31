@@ -217,24 +217,24 @@ ons.ready(function () {
 
             function openNote(note) {
                 var options = {
-                    animation: 'slide', // What animation to use
+                    // animation: 'slide', // What animation to use
+                    animation: 'none',
                     onTransitionEnd: initNotePage, // Called when finishing transition animation
                     note: note,
                 };
-                var p = AppNavigator.pushPage("views/note.html", options);
+                AppNavigator.pushPage("views/note.html", options);
             }
 
             function initNotePage() {
                 var currPage = AppNavigator.getCurrentPage();
                 var note = currPage.options.note;
                 var el = currPage.element[0];
-                var noteName = el.getElementsByClassName('note-name')[0];
                 var noteContent = el.getElementsByClassName('note-content')[0];
                 var noteNameEdit = el.getElementsByClassName('note-title-edit')[0];
                 var audioInput = el.getElementsByClassName('uploadaudio-input')[0];
 
-                noteName.innerText = noteNameEdit.value = note.name;
                 noteContent.innerHTML = note.content;
+                noteNameEdit.value = note.name;
 
                 var insertEmoji = function () {
                     let editorSelection = quill.getSelection();
@@ -310,12 +310,8 @@ ons.ready(function () {
                 });
                 audioInput.addEventListener('change', audioFileUpload);
 
-                var inner = el.getElementsByClassName('ql-editor')[0];
-                inner.addEventListener('click', function () { inner.focus(); })
-
                 noteNameEdit.addEventListener('input', function (e) {
                     onInput();
-                    noteName.innerText = e.target.value;
                 });
             }
 
@@ -350,7 +346,6 @@ ons.ready(function () {
             function saveEdits() {
                 var currPage = AppNavigator.getCurrentPage();
                 var el = currPage.element[0];
-                var noteName = el.getElementsByClassName('note-name')[0];
                 var noteContent = el.getElementsByClassName('note-content')[0];
                 var noteTitle = el.getElementsByClassName('note-title-edit')[0]
                 var note = currPage.options.note;
@@ -361,7 +356,7 @@ ons.ready(function () {
                     var index = window.appData.notes.indexOf(note);
                     var noteItem = notesContainer.getElementsByClassName('note')[index];
                     var noteName = noteItem.getElementsByClassName('note-name')[0];
-                    noteName.innerText = note.name;
+                    noteName.innerText = note.name
                 }
                 window.appData.persist();
             }
