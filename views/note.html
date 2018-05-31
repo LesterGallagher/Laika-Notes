@@ -9,26 +9,26 @@
             </ons-toolbar-button>
         </div>
     </ons-toolbar>
-    <input placeholder="Note's title" class="text-input note-title-edit">
     <div class="ql-toolbar ql-snow">
         <span class="ql-formats">
-            <span class="ql-header ql-picker">
-                <span class="ql-picker-label">
-                    <svg viewBox="0 0 18 18">
-                        <polygon class="ql-stroke" points="7 11 9 13 11 11 7 11"></polygon>
-                        <polygon class="ql-stroke" points="7 7 9 5 11 7 7 7"></polygon>
-                    </svg>
-                </span>
-                <span class="ql-picker-options">
-                    <span class="ql-picker-item" data-value="1"></span>
-                    <span class="ql-picker-item" data-value="2"></span>
-                    <span class="ql-picker-item"></span>
-                </span>
-            </span>
-            <select class="ql-header" style="display: none;">
+            <button type="button" class="ql-undo">
+                <svg viewbox="0 0 18 18">
+                    <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>
+                    <path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path>
+                </svg>
+            </button>
+            <button type="button" class="ql-redo">
+                <svg viewbox="0 0 18 18">
+                    <polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon>
+                    <path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path>
+                </svg>
+            </button>
+        </span>
+        <span class="ql-formats">
+            <select class="ql-header">
                 <option value="1"></option>
                 <option value="2"></option>
-                <option selected="selected"></option>
+                <option selected=""></option>
             </select>
         </span>
         <span class="ql-formats">
@@ -53,11 +53,24 @@
             </button>
         </span>
         <span class="ql-formats">
-            <button type="button" class="ql-emoji"><b>:D</b></button>
-            <button type="button" class="ql-audio"><b>Audio</b></button>
-
-            
+            <button type="button" class="ql-emoji">
+                <b>:D</b>
+            </button>
+            <button type="button" class="ql-audio">
+                <svg viewbox="0 0 18 18">
+                    <ellipse class="ql-fill" cx="10.5" cy="14" rx="2.5" ry="2"></ellipse>
+                    <path class="ql-stroke" d="M12,14V3c0,1.5,3,2.021,3,5"></path>
+                    <path class="ql-fill" d="M7,4A5,5,0,0,0,7,14a3.191,3.191,0,0,1,3-2.957V5.023A4.955,4.955,0,0,0,7,4ZM4.06,8.412a0.5,0.5,0,0,1-.49.4,0.485,0.485,0,0,1-.1-0.01,0.5,0.5,0,0,1-.393-0.588A3.98,3.98,0,0,1,6.216,5.079a0.5,0.5,0,0,1,.2.98A2.985,2.985,0,0,0,4.06,8.412ZM7,10A1,1,0,1,1,8,9,1,1,0,0,1,7,10Z"></path>
+                </svg>
+            </button>
         </span>
     </div>
+    <input placeholder="Note's title" class="text-input note-title-edit">
     <div class="editor note-content"></div>
+    <div class="audio-recording-screen-filler">
+        <div class="stop-recording-wrapper">
+            <p>Stop Recording</p>
+            <ons-button style="background-color: #ce3a30" modifier="cta" class="stop-recording">Stop</ons-button>
+        </div>
+    </div>
 </ons-page>

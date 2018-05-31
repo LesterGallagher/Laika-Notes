@@ -3,7 +3,7 @@
 
 <head>
 
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com http://*.tile.osm.org https://*.googleapis.com ws: 'unsafe-inline' ws: 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com; media-src *; font-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com; img-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com https://places.ns-mlab.nl data: content:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com http://*.tile.osm.org https://maps.googleapis.com; connect-src 'self' https://*.gstatic.com http://*.openov.nl https://*.googleapis.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com http://*.tile.osm.org https://*.googleapis.com ws: 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com; media-src * blob: data:; font-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com; img-src 'self' https://*.gstatic.com http://*.tile.osm.org https://*.googleapis.com https://places.ns-mlab.nl data: content:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com http://*.tile.osm.org https://maps.googleapis.com; connect-src 'self' https://*.gstatic.com http://*.openov.nl https://*.googleapis.com;">
     <meta name="description" content="A simple notes managing app. Can be added to your homescreen and works offline.">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
@@ -102,10 +102,11 @@
             -webkit-text-size-adjust: 100%;
         }
 
-        audio {
+        .audio-recording {
             -moz-box-shadow: 2px 2px 4px 1px rgba(70, 70, 70, 0.2);
             -webkit-box-shadow:  2px 2px 4px 1px rgba(70, 70, 70, 0.2);
             box-shadow: 2px 2px 4px 1px rgba(70, 70, 70, 0.2);
+            margin: 4px 4px 7px 0;
         }
 
         body {
@@ -275,6 +276,38 @@
             transform: translate(-50%, -50%);
             -webkit-animation: loading 1000ms ease-out forwards infinite;
             animation: loading 1000ms ease-out forwards infinite;
+        }
+
+        .audio-recording-screen-filler {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000000;
+            display: none;
+        }
+
+        .audio-recording-screen-filler.visible {
+            display: block;
+        }
+
+        .audio-recording-screen-filler .stop-recording-wrapper {
+            position: absolute;
+            width: 100%;
+            top: 42%;
+            text-align: center;
+            color: #fff;
+        }
+
+        html.theme-dark .ql-snow .ql-toolbar.snow, .ql-snow .ql-stroke, .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+            stroke: #fff;
+        }
+
+        html.theme-dark .ql-picker {
+            color: #fff;
+        }
+
+        html.theme-dark .ql-picker-item {
+            color: #000;
         }
 
         @-webkit-keyframes loading {

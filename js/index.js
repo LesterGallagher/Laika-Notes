@@ -1,5 +1,24 @@
 "use strict"
 
+// media stream cross browser hack
+var MediaStream = window.MediaStream;
+if (typeof MediaStream === 'undefined' && typeof webkitMediaStream !== 'undefined') {
+    MediaStream = webkitMediaStream;
+}
+
+if (typeof MediaStream !== 'undefined' && !('stop' in MediaStream.prototype)) {
+    MediaStream.prototype.stop = function () {
+        this.getAudioTracks().forEach(function (track) {
+            track.stop();
+        });
+
+        this.getVideoTracks().forEach(function (track) {
+            track.stop();
+        });
+    };
+}
+
+
 // quill extensions
 // emoji's
 var Block = Quill.import('blots/block');
@@ -19,6 +38,9 @@ AudioBlot.create = function (options) {
     node.setAttribute('controls', 'true');
     return node;
 }
+AudioBlot.value = function (node) {
+    return { src: node.getAttribute('src') };
+}
 Object.setPrototypeOf(AudioBlot.prototype, BlockEmbed.prototype);
 Object.setPrototypeOf(AudioBlot, BlockEmbed);
 AudioBlot.blotName = 'audio';
@@ -33,6 +55,13 @@ ons.bootstrap();
 
 ons.ready(function () {
     console.log('ready', window.AppNavigator);
+
+    if (window.theme === 'dark') {
+        cu(document.documentElement).add('theme-dark').remove('theme-light');
+    } else {
+        cu(document.documentElement).add('theme-light').remove('theme-dark');
+    }
+
     window.AppNavigator.resetToPage('views/main.html', {
         animation: 'none', onTransitionEnd: function () {
             document.getElementsByClassName('loader')[0].setAttribute('class', '');
@@ -69,6 +98,7 @@ ons.ready(function () {
             notesEditBtn.addEventListener('click', notesEdit);
             AppNavigator.on('prepop', saveEdits);
             window.addEventListener('pause', saveEdits);
+            window.addEventListener("beforeunload", saveEdits);
 
             Hammer(popoverBtn).on('tap', function (e) {
                 ons.createPopover('popovers/context-menu-popover.html').then(function (popover) {
@@ -86,6 +116,11 @@ ons.ready(function () {
                         ? 'lib/OnsenUI/css/onsen-css-components-dark-theme.css'
                         : 'lib/OnsenUI/css/onsen-css-components.css'
                     onsenTheme.setAttribute('href', url);
+                    if (checked) {
+                        cu(document.documentElement).add('theme-dark').remove('theme-light');
+                    } else {
+                        cu(document.documentElement).add('theme-light').remove('theme-dark');
+                    }
                 }
             });
 
@@ -213,9 +248,15 @@ ons.ready(function () {
                             var range = quill.getSelection(true);
                             console.log('adding audio element', src);
                             quill.insertEmbed(range.index, 'audio', { src: src });
-                            // quill.insertText(range.index + 1, '\n', Quill.sources.USER);
-                            quill.setSelection(range.index + 1, Quill.sources.SILENT);
                         });
+                }
+
+                function undo() {
+                    quill.history.undo();
+                }
+
+                function redo() {
+                    quill.history.redo();
                 }
 
                 var quill = new Quill('.editor', {
@@ -225,7 +266,14 @@ ons.ready(function () {
                             handlers: {
                                 emoji: insertEmoji,
                                 audio: insertAudio,
+                                undo: undo,
+                                redo: redo,
                             }
+                        },
+                        history: {
+                            delay: 2000,
+                            maxStack: 500,
+                            userOnly: true
                         }
                     },
                     placeholder: 'Compose an epic...',
@@ -308,6 +356,7 @@ function cu(element) {//classutil
     return new (function () {
         var arr = element.getAttribute('class').split(/\s+/g) || [];
         var items = {};
+        var _this = this;
         for (var a = 0; a < arr.length; a++) {
             items[arr[a]] = true;
         }
@@ -341,7 +390,7 @@ function cu(element) {//classutil
                 }
             }
             element.setAttribute('class', arr.join(' '));
-            return this;
+            return _this;
         }
     })();
 };
@@ -363,13 +412,45 @@ function captureAudio() {
                 });
                 return rej();
             }
-            return navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
                 .then(function (stream) {
-                    if (window.URL) {
-                        return window.URL.createObjectURL(stream);
-                    } else {
-                        return stream;
-                    }
+                    var mediaRecorder = new MediaRecorder(stream);
+
+                    var audioChunks = [];
+
+                    mediaRecorder.addEventListener("dataavailable", function (event) {
+                        console.log('dataavailable', event);
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.start();
+
+                    mediaRecorder.addEventListener("stop", function (event) {
+                        // var audioBlob = new Blob(audioChunks);
+                        try {
+                            cu(screenFiller).remove('visible');
+                            stream.stop();
+                            stopRecording.removeEventListener('click', stop);
+                            var audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
+                            var a = new FileReader();
+                            a.onload = function (e) {
+                                var audioUrl = e.target.result;
+                                return res(audioUrl)
+                            }
+                            a.readAsDataURL(audioBlob);
+                        } catch (err) {
+                            ons.notification.alert({
+                                message: 'Cannot record audio. Browser error.',
+                            });
+                            return rej();
+                        }
+                    });
+
+                    var stop = mediaRecorder.stop.bind(mediaRecorder);
+                    var screenFiller = document.getElementsByClassName('audio-recording-screen-filler')[0];
+                    cu(screenFiller).add('visible');
+                    var stopRecording = document.getElementsByClassName('stop-recording')[0];
+                    stopRecording.addEventListener('click', stop);
                 })
                 .catch(function (err) {
                     ons.notification.alert({
@@ -398,4 +479,3 @@ function captureAudio() {
         }
     });
 }
-
