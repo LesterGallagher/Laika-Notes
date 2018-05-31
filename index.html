@@ -223,14 +223,21 @@
             border-radius: .5em;
         }
 
-        .ql-editor, .ql-editor * {
-            -moz-user-select: all;
-            -webkit-user-select: all;
-            -ms-user-select: all;
-            user-select: all;
+        .ql-editor,  {
+            -moz-user-select: text;
+            -webkit-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
             user-modify: read-wirte;
             -moz-user-modify: read-write;
             -webkit-user-modify: read-write;
+        }
+
+        .ql-editor * {
+            -moz-user-select: text;
+            -webkit-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
         }
         
         .ql-container.ql-snow,
