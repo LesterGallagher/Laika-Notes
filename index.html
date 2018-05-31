@@ -110,15 +110,6 @@
             display: block;
         }
 
-        body {
-            -webkit-touch-callout: none;
-            /* prevent callout to copy image, etc when tap to hold */
-            -webkit-text-size-adjust: none;
-            /* prevent webkit from resizing text to fit */
-            -webkit-user-select: text;
-            /* prevent copy paste, to allow, change 'none' to 'text' */
-        }
-
         .second-page-list-item div p {
             margin: 5px;
         }
@@ -232,23 +223,16 @@
             border-radius: .5em;
         }
 
-        .ql-editor {
-            -moz-user-select: text;
-            -webkit-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
+        .ql-editor, .ql-editor * {
+            -moz-user-select: all;
+            -webkit-user-select: all;
+            -ms-user-select: all;
+            user-select: all;
             user-modify: read-wirte;
             -moz-user-modify: read-write;
             -webkit-user-modify: read-write;
         }
-
-        .ql-editor * {
-            -moz-user-select: text;
-            -webkit-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-        }
-
+        
         .ql-container.ql-snow,
         .ql-toolbar.ql-snow {
             border: 1px solid rgba(70, 70, 70, 0.2);
@@ -333,6 +317,10 @@
 
         .ql-snow .ql-editor img {
             display: block;
+        }
+
+        .ql-container.ql-snow {
+            border: none;
         }
 
         @-webkit-keyframes loading {

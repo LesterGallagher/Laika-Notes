@@ -52,6 +52,7 @@ Quill.register(AudioBlot);
 // end quill extensions
 
 ons.bootstrap();
+ons.disableAutoStatusBarFill();
 
 ons.ready(function () {
     console.log('ready', window.AppNavigator);
