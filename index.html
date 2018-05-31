@@ -107,6 +107,7 @@
             -webkit-box-shadow:  2px 2px 4px 1px rgba(70, 70, 70, 0.2);
             box-shadow: 2px 2px 4px 1px rgba(70, 70, 70, 0.2);
             margin: 4px 4px 7px 0;
+            display: block;
         }
 
         body {
@@ -142,7 +143,7 @@
 
         .editor {
             user-select: all;
-            height: calc(100% - 41.95px);
+            height: calc(100% - 81px);
         }
 
         .note {
@@ -298,7 +299,10 @@
             color: #fff;
         }
 
-        html.theme-dark .ql-snow .ql-toolbar.snow, .ql-snow .ql-stroke, .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+        html.theme-dark .ql-snow .ql-toolbar.snow, 
+        html.theme-dark .ql-snow .ql-stroke, 
+        html.theme-dark .ql-snow .ql-fill, 
+        html.theme-dark .ql-snow .ql-stroke.ql-fill {
             stroke: #fff;
         }
 
@@ -308,6 +312,27 @@
 
         html.theme-dark .ql-picker-item {
             color: #000;
+        }
+
+        .hidden-inputfile {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .hidden-inputfile + label {
+            cursor: pointer;
+        }
+
+        .hidden-inputfile:focus + label {
+            color: #06c;
+        }
+
+        .ql-snow .ql-editor img {
+            display: block;
         }
 
         @-webkit-keyframes loading {

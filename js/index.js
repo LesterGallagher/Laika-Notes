@@ -231,6 +231,7 @@ ons.ready(function () {
                 var noteName = el.getElementsByClassName('note-name')[0];
                 var noteContent = el.getElementsByClassName('note-content')[0];
                 var noteNameEdit = el.getElementsByClassName('note-title-edit')[0];
+                var audioInput = el.getElementsByClassName('uploadaudio-input')[0];
 
                 noteName.innerText = noteNameEdit.value = note.name;
                 noteContent.innerHTML = note.content;
@@ -244,10 +245,12 @@ ons.ready(function () {
 
                 var insertAudio = function () {
                     captureAudio()
-                        .then(src => {
+                        .then(function (src) {
                             var range = quill.getSelection(true);
                             console.log('adding audio element', src);
-                            quill.insertEmbed(range.index, 'audio', { src: src });
+                            quill.insertText(range.index, '\n', Quill.sources.USER);
+                            quill.insertEmbed(range.index + 1, 'audio', { src: src });
+                            quill.setSelection(range.index + 2, Quill.sources.SILENT);
                         });
                 }
 
@@ -257,6 +260,27 @@ ons.ready(function () {
 
                 function redo() {
                     quill.history.redo();
+                }
+
+                function audioFileUpload() {
+                    var file = audioInput.files[0];
+                    if (file.type.match(/audio.*/)) {
+                        var reader = new FileReader();
+                        reader.onload = function (d) {
+                            var src = d.target.result;
+                            var range = quill.getSelection(true);
+                            console.log('adding audio element', src);
+                            quill.insertText(range.index, '\n', Quill.sources.USER);
+                            quill.insertEmbed(range.index + 1, 'audio', { src: src });
+                            quill.setSelection(range.index + 2, Quill.sources.SILENT);
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        ons.notification.alert({
+                            message: 'This is not a valid audio file.',
+                        });
+                    }
+                    audioInput.value = '';
                 }
 
                 var quill = new Quill('.editor', {
@@ -284,6 +308,7 @@ ons.ready(function () {
                         onInput();
                     }
                 });
+                audioInput.addEventListener('change', audioFileUpload);
 
                 var inner = el.getElementsByClassName('ql-editor')[0];
                 inner.addEventListener('click', function () { inner.focus(); })
